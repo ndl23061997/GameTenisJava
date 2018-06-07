@@ -1,15 +1,24 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
-public class Surface extends JPanel{
+public class Surface extends JPanel implements ActionListener {
+	int soccer;
+	Timer timer;
 	Random rd = new Random();
 	int ax, ay; // Gia toc cua qua bong
+	int move;
+	public int gameOver;
 	public Bat bat;
 	public Ball ball;
 	KeyListener kl = new KeyListener() {
@@ -36,6 +45,7 @@ public class Surface extends JPanel{
 						if(ax == 0 && ay == 0) {
 							ball.setLocation(bat.getX() + bat.getWidth()/2 - ball.getSize()/2, bat.getY() - ball.getSize());
 						}
+						move = -1;
 						return;
 					}
 					bat.setLocation(bat.getX() - (getWidth() - bat.getWidth()) / 5, bat.getY());
@@ -43,6 +53,7 @@ public class Surface extends JPanel{
 						ball.setLocation(bat.getX() + bat.getWidth()/2 - ball.getSize()/2, bat.getY() - ball.getSize());
 					}
 					System.out.println("Left Pressed");
+					move = -1;
 					break;
 				case KeyEvent.VK_RIGHT:
 					if(getWidth() - (bat.getX() + bat.getWidth()) <= bat.getWidth()) {
@@ -50,6 +61,7 @@ public class Surface extends JPanel{
 						if(ax == 0 && ay == 0) {
 							ball.setLocation(bat.getX() + bat.getWidth()/2 - ball.getSize()/2, bat.getY() - ball.getSize());
 						}
+						move = 1;
 						return;
 					}
 					bat.setLocation(bat.getX() + (getWidth() - bat.getWidth()) / 5, bat.getY());
@@ -57,6 +69,7 @@ public class Surface extends JPanel{
 						ball.setLocation(bat.getX() + bat.getWidth()/2 - ball.getSize()/2, bat.getY() - ball.getSize());
 					}
 					System.out.println("Right Pressed");
+					move = 1;
 					break;
 				case KeyEvent.VK_ENTER:
 					if(ax == 0 && ay == 0) {
@@ -67,7 +80,16 @@ public class Surface extends JPanel{
 			}
 		}
 	};
+	
+	private void drawSoccer(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g.create();
+		g2d.setColor(Color.red);
+		g2d.setFont(new Font("Cosolas", Font.BOLD, 20));
+		g2d.drawString("Soccer : " + Integer.toString(this.soccer), 30, 30);
+		g2d.dispose();
+	}
 	public Surface() {
+		initTimer();
 		ax = 0;
 		ay = 0;
 		bat = new Bat();
@@ -75,6 +97,11 @@ public class Surface extends JPanel{
 		System.out.println(this.getHeight());
 		this.addKeyListener(kl);
 		this.setFocusable(true);
+	}
+	
+	private void initTimer() {
+		timer = new Timer(500, this);
+		timer.start();
 	}
 	
 	private void drawBat(Graphics g, Bat bat) {
@@ -91,30 +118,38 @@ public class Surface extends JPanel{
 		super.paintComponent(g);
 		drawBat(g, bat);
 		drawBall(g,ball);
-		isCollision();
+		drawSoccer(g);
+		if(isCollision()) gameOver = 1;
 	}
 	
 	public Rectangle getSurfaceBound() {
 		return new Rectangle(0,0, this.getWidth(), this.getHeight());
 	}
-	
-	private boolean isCollision() {
+	// Xu li va cham (impact)
+	public boolean isCollision() { 
 		boolean die = false;
+		if(ball.getY() >= this.getHeight()) return true;
 		if(this.getSurfaceBound().intersects(ball.getBallBound())) {
+			
 			if(ball.getX() + ball.getSize() >= this.getWidth() || ball.getX() <= 0) {
 				ax = ax*-1;
 			}
-			
-			if(ball.getY() <= 0) {
+			else if(ball.getY() <= 0) {
 				ay = ay*-1;
 			}
-			
-			if(ball.getY() == this.getHeight()) die = true;
 		}
-			
 		if(bat.getBatBound().intersects(ball.getBallBound())) {
 			ay = ay*-1;
+			while (ax == 0) ax = rd.nextInt() % 3;
+			if(ax*move < 0) ax = ax*-1;
+			this.soccer ++;
 		}
+		
 		return die;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		move = 0;
 	}
 }
