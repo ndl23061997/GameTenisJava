@@ -6,7 +6,7 @@ public class Bat {
 		x = 0;
 		y = 0;
 		width = 70;
-		height = 20;
+		height = 10;
 	}
 	
 	public int getWidth() {
@@ -40,5 +40,11 @@ public class Bat {
 	
 	public Rectangle getBatBound() {
 		return new Rectangle(x,y, width, height);
+	}
+	public Rectangle getBatLeftBound() {
+		return new Rectangle(x,y, 1, 1);
+	}
+	public Rectangle getBatRightBound() {
+		return new Rectangle(x+ width,y, 1, 1);
 	}
 }

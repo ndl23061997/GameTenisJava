@@ -8,9 +8,10 @@ public class Run {
 		Window wnd = new Window();		
 		wnd.add(sf);
 		wnd.setVisible(true);	
+		wnd.setResizable(false);
 		while (true) {
 			if(sf.gameOver == 1) {
-				JOptionPane.showMessageDialog(null, "Tro choi ket thuc");
+				JOptionPane.showMessageDialog(null, "Tro choi ket thuc\n Diem so : " + sf.soccer);
 				System.exit(0);
 			}
 			if(wnd.getHeight() != wndHeight) {
