@@ -1,9 +1,10 @@
 import javax.swing.JOptionPane;
 
 public class Run {
+	int nax;
+	int nay;
 	public static void main(String[] args) throws InterruptedException {
 		int wndHeight = 0;
-		int nax, nay;
 		Surface sf = new Surface();
 		Window wnd = new Window();		
 		wnd.add(sf);

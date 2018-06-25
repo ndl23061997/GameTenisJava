@@ -13,6 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Surface extends JPanel implements ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4842464540597297938L;
 	int soccer;
 	Timer timer;
 	Random rd = new Random();
